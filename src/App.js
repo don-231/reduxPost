@@ -1,3 +1,4 @@
+// install "npm i date-fns" in terminal
 import logo from './logo.svg';
 import './App.css';
 import { PostList } from './feature/posts/postList';

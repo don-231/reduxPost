@@ -1,27 +1,40 @@
-import { nanoid } from "@reduxjs/toolkit";
 import { useState } from "react";
 import { postAdded } from "./postsSlice";
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
+import { selectAllUsers } from "../users/usersSlice";
 
 export const AddPostForm = () => {
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
+    const [userId, setUserId] = useState('')
+
+    const users = useSelector(selectAllUsers)
+
     const dispatch = useDispatch()
 
     const onTitleChanged = (e) => setTitle(e.target.value)
     const onContentChanged = (e) => setContent(e.target.value)
+    const onAuthorChanged = (e) => setUserId(e.target.value)
 
     const onPostFormAdded = () => {
-        dispatch(
-            postAdded({
-                id: nanoid(),
-                title,
-                content
-            })
-        )
-        setTitle('')
-        setContent('')
+        if (title && content){
+            dispatch(
+                postAdded(title, content, userId)
+            )
+            setTitle('')
+            setContent('')
         }
+        }
+
+
+        const canSave = Boolean(title) && Boolean(content) && Boolean(userId)
+
+    const usersOptions = users.map(user => (
+        <option key={user.id} value={user.id}>
+            {user.name}
+        </option>
+    ))
+
         return(
             <section className="flex justify-center">
                 <div>
@@ -40,6 +53,16 @@ export const AddPostForm = () => {
                             </div>
                         </div>
                         <div className="mt-6">
+                        <label className="text-white text-left text-xl" htmlFor="postAuthor">
+                                Author
+                            </label>
+                            <div><select value={userId} onChange={onAuthorChanged} className="bg-gray-900 text-white focus:outline-none 
+                            focus:ring focus:ring-gray-200 p-2">
+                                <option></option>
+                                {usersOptions}
+                                </select></div>                            
+                        </div>
+                        <div className="mt-6">
                         <label className="text-white text-left text-xl" htmlFor="postTitle">
                                 Content
                             </label>
@@ -52,7 +75,7 @@ export const AddPostForm = () => {
                         </div>
                         <div>
                             <button className="mt-3 bg-gray-500 text-white p-2 hover:bg-gray-400 rounded-md"
-                            onClick={onPostFormAdded}>
+                            onClick={onPostFormAdded} disabled={!canSave}>
                                 Save Post
                             </button>
                         </div>                        
