@@ -3,6 +3,7 @@ import { selectAllPosts } from "./postsSlice";
 import { nanoid } from "@reduxjs/toolkit"
 import { PostAuthor } from "./postAuthor";
 import { TimeAgo } from "./timeAgo";
+import { ReactionButtons } from "./reactionButton";
 
 export const PostList = () => {
     const dispatch = useDispatch()
@@ -17,7 +18,8 @@ export const PostList = () => {
           <p className="">{post.content.substring(0,100)}</p>
           <p><PostAuthor userId={post.userId}/>
           <TimeAgo timeStamp={post.date}/>
-          </p>          
+          </p>     
+          <ReactionButtons post={post}/>     
       </article>
       )
         )
